@@ -41,6 +41,7 @@
     const spectrogram = new wavesUI.helpers.SpectrogramLayer(features, {
       height: height
     });
+    timeline.addLayer(spectrogram, 'main');
   }
 
   const drawFileData = (fileData) => {
