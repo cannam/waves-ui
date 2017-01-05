@@ -20,6 +20,7 @@ import Ticks from './shapes/ticks';
 import TracePath from './shapes/trace-path';
 import TraceDots from './shapes/trace-dots';
 import Waveform from './shapes/waveform';
+import Spectrogram from './shapes/spectrogram-shape';
 
 // behaviors
 import BaseBehavior from './behaviors/base-behavior';
@@ -57,6 +58,7 @@ import TickLayer from './helpers/tick-layer';
 import TimeAxisLayer from './helpers/time-axis-layer';
 import TraceLayer from './helpers/trace-layer';
 import WaveformLayer from './helpers/waveform-layer';
+import SpectrogramLayer from './helpers/spectrogram-layer';
 
 // axis
 import AxisLayer from './axis/axis-layer';
@@ -75,7 +77,8 @@ export default {
   },
   shapes: {
     AnnotatedMarker, AnnotatedSegment, BaseShape, Cursor,
-    Dot, Line, Marker, Segment, Ticks, TracePath, TraceDots, Waveform
+    Dot, Line, Marker, Segment, Ticks, TracePath, TraceDots, Waveform,
+    Spectrogram
   },
   behaviors: {
     BaseBehavior, BreakpointBehavior, MarkerBehavior, SegmentBehavior,
@@ -89,7 +92,7 @@ export default {
   helpers: {
     AnnotatedMarkerLayer, AnnotatedSegmentLayer, BreakpointLayer,
     CursorLayer, GridAxisLayer, MarkerLayer, SegmentLayer, TickLayer,
-    TimeAxisLayer, TraceLayer, WaveformLayer
+    TimeAxisLayer, TraceLayer, WaveformLayer, SpectrogramLayer
   },
   axis: {
     AxisLayer, timeAxisGenerator, gridAxisGenerator
