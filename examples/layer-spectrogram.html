@@ -21,6 +21,38 @@
 <div class="track" id="track-1"></div>
 <script class="example" rel="track-1">
   // We need some spectrogram like data, get it from a JSON file for simplicity
+  function readFile(url) {
+    return new Promise(res => {
+      let request = new XMLHttpRequest();
+      request.addEventListener('load', (response) => res(JSON.parse(response.target.responseText)));
+      request.open('GET', url);
+      request.send();
+    });
+  }
+
+  function drawSpectrogram(features, $track, width, height) {
+    // define the number of pixels per second the timeline should display
+    const duration = 3.4784581661224365;
+    const pixelsPerSecond = width / duration;
+    let timeline = new wavesUI.core.Timeline(pixelsPerSecond, width);
+    timeline.createTrack($track, height, 'main');
+
+    // create the spectrogram layer
+    const spectrogram = new wavesUI.helpers.SpectrogramLayer(features, {
+      height: height
+    });
+  }
+
+  const drawFileData = (fileData) => {
+    const $track = document.querySelector('#track-1');
+    const width = $track.getBoundingClientRect().width;
+    const height = 200;
+    drawSpectrogram(fileData, $track, width, height);
+  };
+
+  readFile('assets/drum-loop-spectrogram.json')
+    .then(drawFileData)
+    .catch((err) => console.log(err));
 </script>
 </body>
 </html>
