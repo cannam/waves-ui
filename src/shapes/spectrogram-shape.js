@@ -1,6 +1,8 @@
 /**
  * Created by lucast on 04/01/2017.
  */
+import BaseShape from './base-shape';
+
 export default class Spectrogram extends BaseShape {
     getClassName() {
         return 'spectrogram';
