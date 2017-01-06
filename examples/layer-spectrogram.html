@@ -38,17 +38,18 @@
     timeline.createTrack($track, height, 'main');
 
     // create the spectrogram layer
-    const spectrogram = new wavesUI.helpers.SpectrogramLayer(features, {
+    const spectrogramLayer = new wavesUI.helpers.SpectrogramLayer(features, {
       height: height
     });
-    timeline.addLayer(spectrogram, 'main');
+    timeline.state = new wavesUI.states.CenteredZoomState(timeline);
+    timeline.addLayer(spectrogramLayer, 'main', timeline.timeContext);
   }
 
   const drawFileData = (fileData) => {
     const $track = document.querySelector('#track-1');
     const width = $track.getBoundingClientRect().width;
     const height = 200;
-    drawSpectrogram(fileData, $track, width, height);
+    drawSpectrogram(fileData.z, $track, width, height);
   };
 
   readFile('assets/drum-loop-spectrogram.json')
