@@ -165,7 +165,7 @@ export default class TimelineTimeContext {
    * Returns if the duration displayed by tracks should be maintained when
    * their width is updated.
    *
-   * @type {Number}
+   * @type {Boolean}
    */
   get maintainVisibleDuration() {
     return this._maintainVisibleDuration;

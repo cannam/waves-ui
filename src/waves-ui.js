@@ -4,6 +4,7 @@ import Layer from './core/layer';
 import namespace from './core/namespace';
 import TimelineTimeContext from './core/timeline-time-context';
 import Timeline from './core/timeline';
+import NotifyingTimeline from './core/notifying-timeline';
 import TrackCollection from './core/track-collection';
 import Track from './core/track';
 
@@ -69,11 +70,12 @@ import gridAxisGenerator from './axis/grid-axis-generator';
 import format from './utils/format';
 import OrthogonalData from './utils/orthogonal-data';
 import scales from './utils/scales';
+import {ColourImage, Colour} from './utils/images';
 
 export default {
   core: {
     LayerTimeContext, Layer, namespace,
-    TimelineTimeContext, Timeline, TrackCollection, Track
+    TimelineTimeContext, Timeline, TrackCollection, Track, NotifyingTimeline
   },
   shapes: {
     AnnotatedMarker, AnnotatedSegment, BaseShape, Cursor,
@@ -98,6 +100,6 @@ export default {
     AxisLayer, timeAxisGenerator, gridAxisGenerator
   },
   utils: {
-    format, OrthogonalData, scales
+    format, OrthogonalData, scales, Colour, ColourImage
   }
 };

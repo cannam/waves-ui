@@ -37,10 +37,33 @@
     let timeline = new wavesUI.core.Timeline(pixelsPerSecond, width);
     timeline.createTrack($track, height, 'main');
 
-    // create the spectrogram layer
-    const spectrogramLayer = new wavesUI.helpers.SpectrogramLayer(features, {
-      height: height
+    // time axis
+    const timeAxis = new wavesUI.helpers.TimeAxisLayer({
+      height: height,
+      color: 'gray'
     });
+    timeline.addLayer(timeAxis, 'main', timeline.timeContext, true);
+
+    // segment
+    const segmentLayer = new wavesUI.helpers.SegmentLayer([
+      {x: 0, width: duration, opacity: 0.8, color: 'orange'}
+    ], {
+      height: height,
+      displayHandlers: false,
+    });
+
+    // insert the layer inside the 'main' track
+    timeline.addLayer(segmentLayer, 'main');
+
+    // create the spectrogram layer
+    const spectrogramLayer = new wavesUI.helpers.SpectrogramLayer(
+      features,
+      512 / 44100.0,
+      {
+        height: height,
+        opacity: 1.0
+      }
+    );
     timeline.state = new wavesUI.states.CenteredZoomState(timeline);
     timeline.addLayer(spectrogramLayer, 'main', timeline.timeContext);
   }
@@ -48,7 +71,7 @@
   const drawFileData = (fileData) => {
     const $track = document.querySelector('#track-1');
     const width = $track.getBoundingClientRect().width;
-    const height = 200;
+    const height = 400;
     drawSpectrogram(fileData.z, $track, width, height);
   };
 

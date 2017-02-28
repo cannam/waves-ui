@@ -75,7 +75,7 @@ export default class Waveform extends BaseShape {
     let maxX = minX;
     maxX += (renderingContext.width - minX < renderingContext.visibleWidth) ?
       renderingContext.width : renderingContext.visibleWidth;
-
+    console.log(minX, maxX);
     // get min/max per pixels, clamped to the visible area
     const invert = renderingContext.timeToPixel.invert;
     const sampleRate = this.params.sampleRate;

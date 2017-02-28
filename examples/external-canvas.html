@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Test Canvas</title>
+
+  <link rel="stylesheet" type="text/css" href="./assets/common.css" />
+  <script src="../waves-ui.umd.js"></script>
+</head>
+<body>
+<div class="track" id="track-1">
+  <canvas id="external"></canvas>
+</div>
+<div id="zoom-controls"></div>
+<div id="seek-controls"></div>
+</body>
+<!--<script>-->
+
+  <!--class NavigationComponent {-->
+    <!--constructor($container) {-->
+      <!--this.upListeners = [];-->
+      <!--this.downListeners = [];-->
+      <!--this.$container = $container;-->
+      <!--const createButton = (text) => {-->
+        <!--const button = document.createElement('button');-->
+        <!--button.innerHTML = text;-->
+        <!--return button;-->
+      <!--};-->
+      <!--this.up = createButton('+');-->
+      <!--this.down = createButton('-');-->
+
+      <!--const notifyListeners = (listeners) => {-->
+        <!--listeners.forEach(cb => cb());-->
+      <!--};-->
+
+      <!--this.up.addEventListener('click', () => {-->
+        <!--notifyListeners(this.upListeners);-->
+      <!--});-->
+      <!--this.down.addEventListener('click', () => {-->
+        <!--notifyListeners(this.downListeners);-->
+      <!--});-->
+      <!--this.$container.appendChild(this.up);-->
+      <!--this.$container.appendChild(this.down);-->
+    <!--}-->
+
+    <!--onUp(callback) {-->
+      <!--this.upListeners.push(callback);-->
+    <!--}-->
+
+    <!--onDown(callback) {-->
+      <!--this.downListeners.push(callback);-->
+    <!--}-->
+  <!--}-->
+
+  <!--function createSquare() {-->
+    <!--const colourMap = [-->
+      <!--[[0, 0, 0], [255, 255, 255]],-->
+      <!--[[255, 0, 0], [0, 255, 0]],-->
+      <!--[[0, 0, 255], [255, 255, 0]],-->
+      <!--[[0, 255, 255], [255, 0, 255]],-->
+      <!--[[0, 0, 0], [255, 255, 255]],-->
+      <!--[[255, 0, 0], [0, 255, 0]],-->
+      <!--[[0, 0, 255], [255, 255, 0]],-->
+      <!--[[0, 255, 255], [255, 0, 255]],-->
+      <!--[[0, 0, 0], [255, 255, 255]],-->
+      <!--[[255, 0, 0], [0, 255, 0]],-->
+      <!--[[0, 0, 255], [255, 255, 0]],-->
+      <!--[[0, 255, 255], [255, 0, 255]]-->
+    <!--];-->
+
+    <!--const width = 2;-->
+    <!--const height = 12;-->
+    <!--const testImage = new wavesUI.utils.ColourImage(400, 12);-->
+    <!--for (let y = 0; y < height; ++y)-->
+      <!--for (let x = 0; x < width; ++x)-->
+        <!--testImage.setPixel(x, y, new wavesUI.utils.Colour(...colourMap[y][x]));-->
+    <!--return testImage.data;-->
+  <!--}-->
+
+  <!--function drawPixmap(ctx, width, height, pixelData, horizontalScale = 1) {-->
+    <!--const imageToDraw = ctx.createImageData(width, height);-->
+    <!--imageToDraw.data.set(pixelData);-->
+    <!--const offScreenCanvas = document.createElement('canvas');-->
+    <!--offScreenCanvas.width = width;-->
+    <!--offScreenCanvas.height = height;-->
+    <!--offScreenCanvas.getContext('2d').putImageData(imageToDraw, 0, 0);-->
+<!--//    ctx.drawImage(offScreenCanvas, 0, 0, 1, 4, 0, 0, horizontalScale * width, height);-->
+    <!--ctx.drawImage(offScreenCanvas, 0, 0, horizontalScale * width, height);-->
+  <!--}-->
+
+  <!--function setupCanvas($canvas, startX = 0, endX = 10, horizontalScale = 1) {-->
+    <!--$canvas.style['position'] = 'absolute';-->
+    <!--const ctx = $canvas.getContext('2d');-->
+    <!--ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);-->
+    <!--ctx.fillStyle = "rgb(200,0,0)";-->
+    <!--const width = 208;-->
+    <!--horizontalScale = horizontalScale > 1 ? horizontalScale : 1;-->
+    <!--ctx.fillRect (startX, 10, endX, 50);-->
+  <!--}-->
+
+  <!--let count = 0;-->
+  <!--const timeStamp = 1.0;-->
+  <!--const duration = 0.5;-->
+
+  <!--const timeline = setupWavesTimeline($track, (val) => {-->
+    <!--if (val.start - duration <= timeStamp && val.end > timeStamp) {-->
+      <!--setupCanvas(-->
+        <!--$canvas,-->
+        <!--timeline.timeToPixel(timeStamp) - timeline.timeToPixel(val.start),-->
+        <!--timeline.timeToPixel(duration),-->
+        <!--val.horizontalScaleFactor-->
+      <!--);-->
+    <!--} else {-->
+      <!--clearCanvas($canvas);-->
+    <!--}-->
+    <!--drawPixmap($canvas.getContext('2d'), 400, 1200, createSquare(), val.horizontalScaleFactor);-->
+  <!--});-->
+  <!--setupCanvas($canvas, timeline.timeToPixel(timeStamp), timeline.timeToPixel(duration));-->
+  <!--const zoom = new NavigationComponent(document.querySelector('#zoom-controls'));-->
+  <!--zoom.onUp(() => setupCanvas($canvas, ++count));-->
+  <!--zoom.onDown(() => console.log('down'));-->
+  <!--const seek = new NavigationComponent(document.querySelector('#seek-controls'));-->
+  <!--seek.onUp(() => console.log('up-seek'));-->
+  <!--seek.onDown(() => console.log('down-seek'));-->
+<!--</script>-->
+
+<script>
+  function setupWavesTimeline($track, onVisibleExtentsChanged = () => {}) {
+    const width = $track.getBoundingClientRect().width;
+    const height = 400;
+    const duration = 3.4784581661224365;
+    const pixelsPerSecond = width / duration;
+    let timeline = new wavesUI.core.NotifyingTimeline(pixelsPerSecond, width);
+    timeline.on('visibleExtentsChanged', onVisibleExtentsChanged);
+    timeline.createTrack($track, height, 'main');
+
+    // time axis
+    const timeAxis = new wavesUI.helpers.TimeAxisLayer({
+      height: height,
+      color: 'gray'
+    });
+    timeline.addLayer(timeAxis, 'main', timeline.timeContext, true);
+    timeline.state = new wavesUI.states.CenteredZoomState(timeline);
+
+    // do an initial draw
+    timeline.offset = 0;
+    return timeline;
+  }
+
+  function clearCanvas($canvas) {
+    const ctx = $canvas.getContext('2d');
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+  }
+
+  function drawSpectrogram(data, stepDuration, canvasCtx, image, canvasImage, timelineState) {
+    // need to render the visible area...
+
+    // so get the closest bin for either side... plus one either side?
+
+    // bare in mind that data contains a 2d array, the first dimension is time, second bins
+    // so put another way, data[0] gets the column data for the bin which spans from 0 - stepDuration
+
+    // so how many columns fit in the current visible area?
+    const startColumn = Math.floor(timelineState.start / stepDuration);
+    const endColumn = Math.ceil(timelineState.end / stepDuration);
+    const visibleColumns = data.slice(startColumn, endColumn + 1);
+    if (visibleColumns.length === 0) return;
+    const nBins = visibleColumns[0].length; // TODO think about checking this
+    // visibleColumns probably contains up to 2 columns which can't be seen, or are partially seen
+    // there is probably a better way to do this but for now my approach is going to be...
+
+    // 1. draw all of the visibleColumns
+
+    // TODO actually figure out if there is less than one pixel per column / bin - if so summarise
+    // TODO or the opposite of above, in which case scale the image
+
+    // TODO factor out normalisation, colour binning etc so other schemes can be injected
+    const minDecibels = -100;
+    const maxDecibels = -30;
+    const rangeScaleFactor = 1.0 / (maxDecibels - minDecibels);
+    const normalisationFactor = 1 / nBins;
+//    canvasImage.data.fill(255);
+    for (let columnIndex = 0, nColumns = visibleColumns.length;
+         columnIndex < nColumns; ++columnIndex) {
+      for (let binIndex = 0; binIndex < nBins; ++binIndex) {
+        const value = visibleColumns[columnIndex][binIndex] * normalisationFactor;
+        // re-map range
+        const dbMag = (isFinite(value) && value > 0.0) ? 20.0 * Math.log10(value) : minDecibels;
+        let scaledValue = 255 * (dbMag - minDecibels) * rangeScaleFactor;
+        // clip to uint8 range
+        if (scaledValue < 0)
+          scaledValue = 0;
+        if (scaledValue > 255)
+          scaledValue = 255;
+        scaledValue = Math.floor(scaledValue);
+        scaledValue = 255 - scaledValue;
+        // TODO I thought it would be columnIndex, binIndex - think about this
+        image.setPixel(binIndex, columnIndex, new wavesUI.utils.Colour(
+          scaledValue,
+          scaledValue,
+          scaledValue
+        ));
+      }
+      canvasCtx.putImageData(canvasImage, 0, 0);
+    }
+
+    // 2. translate the canvas backwards
+    // by the difference between start time and the start column time,
+    // if the difference is positive
+  }
+</script>
+
+<script>
+  const $track = document.querySelector('#track-1');
+  const $canvas = document.querySelector('#external');
+  $canvas.style['position'] = 'absolute';
+  $canvas.height = 400;
+  $canvas.width = $track.getBoundingClientRect().width;
+  let canvasImage = $canvas.getContext('2d').createImageData($canvas.width, $canvas.height);
+  let spectrogramImage = new wavesUI.utils.ColourImage(
+    $canvas.width,
+    $canvas.height,
+    canvasImage.data,
+  );
+
+  // We need some spectrogram like data, get it from a JSON file for simplicity
+  function readFile(url) {
+    return new Promise(res => {
+      let request = new XMLHttpRequest();
+      request.addEventListener('load', (response) => res(JSON.parse(response.target.responseText)));
+      request.open('GET', url);
+      request.send();
+    });
+  }
+
+  readFile('assets/drum-loop-spectrogram.json')
+    .then(data => {
+      setupWavesTimeline(
+        $track,
+        (val) => drawSpectrogram(
+          data.z,
+          0.011609977324263039, // 512 / 44100 (hardcoded for now)
+          $canvas.getContext('2d'),
+          spectrogramImage,
+          canvasImage,
+          val
+        )
+      );
+    })
+    .catch((err) => console.log(err));
+</script>
+</html>

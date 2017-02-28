@@ -286,7 +286,7 @@ export default class Layer extends events.EventEmitter {
   /**
    * Returns the data associated to the layer.
    *
-   * @type {Object[]}
+   * @type {Object|Object[]}
    */
   get data() { return this._data; }
 

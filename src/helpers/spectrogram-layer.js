@@ -6,8 +6,12 @@ import Layer from '../core/Layer';
 import Spectrogram from '../shapes/spectrogram-shape';
 
 export default class SpectrogramLayer extends Layer {
-  constructor(featureList, options) {
-    options = Object.assign({}, {/* TODO defaults */}, options);
+  constructor(featureList, stepDuration, options) {
+    options = Object.assign(
+      {},
+      {/* TODO defaults */},
+      options
+    );
 
     // TODO entity? what are the other options
     super('entity', featureList, options);
@@ -15,7 +19,10 @@ export default class SpectrogramLayer extends Layer {
     this.configureShape(
       Spectrogram,
       {}, // accessors
-      {} // TODO options to pass to shape
+      {
+        stepDuration: stepDuration,
+        opacity: options.opacity
+      } // TODO options to pass to shape
     );
   }
 }
