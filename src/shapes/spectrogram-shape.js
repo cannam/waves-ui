@@ -49,6 +49,7 @@ export default class Spectrogram extends BaseShape {
   }
 
   update(renderingCtx, datum) {
+    const before = performance.now();
     this._ctx.canvas.width = renderingCtx.width;
     this.$el.setAttribute('width', renderingCtx.width);
     // fix chrome bug with translate
@@ -78,6 +79,9 @@ export default class Spectrogram extends BaseShape {
       Spectrogram.drawSpectrogramColumn(bins, this._ctx, binWidthPx, binHeightPx, renderingCtx.height);
     }
     // this.$el.setAttribute('href', this._ctx.canvas.toDataURL());
+
+    const after = performance.now();
+    console.log("spectrogram update time = " + (after - before) + "ms");
   }
 
   static drawSpectrogramColumn(bins, ctx, binWidth, binHeight, height) {
@@ -108,9 +112,9 @@ export default class Spectrogram extends BaseShape {
   }
 
   getColumnsInArea(timeExtents, datum) {
-    const slice = datum instanceof Float32Array
-      ? (start, end) => datum.subarray(start, end + 1)
-      : (start, end) => datum.slice(start, end + 1);
+    const slice = datum instanceof Float32Array ?
+          (start, end) => datum.subarray(start, end + 1) :
+          (start, end) => datum.slice(start, end + 1);
     const stepDuration = this.params.stepDuration;
     if (stepDuration === 0) return []; // TODO think about this more
     // TODO bounds check
