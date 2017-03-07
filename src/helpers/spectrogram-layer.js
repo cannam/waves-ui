@@ -2,7 +2,7 @@
  * Created by lucast on 05/01/2017.
  */
 
-import Layer from '../core/Layer';
+import Layer from '../core/layer';
 import Spectrogram from '../shapes/spectrogram-shape';
 
 export default class SpectrogramLayer extends Layer {
