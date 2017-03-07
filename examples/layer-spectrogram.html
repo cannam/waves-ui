@@ -18,7 +18,13 @@
 <!-- SIMPLE USAGE -->
 <h2 id="simple-use">Simple Usage</h2>
 
-<div class="track" id="track-1"></div>
+<div class="track" id="track-1">
+<canvas id="external-canvas"></canvas>
+
+</div>
+
+
+
 <script class="example" rel="track-1">
   // We need some spectrogram like data, get it from a JSON file for simplicity
   function readFile(url) {
@@ -34,7 +40,12 @@
     // define the number of pixels per second the timeline should display
     const duration = 3.4784581661224365;
     const pixelsPerSecond = width / duration;
-    let timeline = new wavesUI.core.Timeline(pixelsPerSecond, width);
+    let timeline = new wavesUI.core.NotifyingTimeline(pixelsPerSecond, width);
+
+    timeline.on('visibleExtentsChanged', (ev) => {
+      console.log(ev);
+    });
+
     timeline.createTrack($track, height, 'main');
 
     // time axis
@@ -66,17 +77,34 @@
     );
     timeline.state = new wavesUI.states.CenteredZoomState(timeline);
     timeline.addLayer(spectrogramLayer, 'main', timeline.timeContext);
+    return timeline;
   }
 
   const drawFileData = (fileData) => {
     const $track = document.querySelector('#track-1');
     const width = $track.getBoundingClientRect().width;
     const height = 400;
-    drawSpectrogram(fileData.z, $track, width, height);
+    return drawSpectrogram(fileData.z, $track, width, height);
+  };
+
+  const drawExternalCanvas = (timeline) => {
+    const $canvas = document.getElementById("external-canvas");
+    $canvas.style['position'] = 'absolute';
+    $canvas.height = 400;
+    const $track = document.querySelector('#track-1');
+    $canvas.width = $track.getBoundingClientRect().width;
+    const ctx = $canvas.getContext("2d");
+    ctx.font = "30px Arial";
+    ctx.fillText("Hello World", timeline.timeToPixel(4.0), 50);
+    timeline.on('visibleExtentsChanged', (ev) => {
+      ctx.clearRect(0, 0, $canvas.width, $canvas.height);
+      ctx.fillText("Hello World", timeline.timeToPixel(4.0 - ev.start), 50);
+    });
   };
 
   readFile('assets/drum-loop-spectrogram.json')
     .then(drawFileData)
+    .then(drawExternalCanvas)
     .catch((err) => console.log(err));
 </script>
 </body>
